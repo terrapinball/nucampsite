@@ -60,7 +60,6 @@ class Header extends Component {
                             </NavItem>
                         </Nav>
                     </Collapse>
-
                 </div>
             </Navbar>
         </React.Fragment>
