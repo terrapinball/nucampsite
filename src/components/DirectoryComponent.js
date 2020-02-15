@@ -19,7 +19,7 @@ function RenderDirectoryItem({campsite}) {
 }
 
 
-function Directory (props){
+function Directory(props) {
 
         const directory = props.campsites.campsites.map(campsite => {
             return (
@@ -50,7 +50,7 @@ function Directory (props){
             )
         }
         
-        return(
+        return (
             <div className="container">
                 <div className="row m-2">
                     <h2>Directory</h2>

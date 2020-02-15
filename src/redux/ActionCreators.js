@@ -7,12 +7,12 @@ export const fetchCampsites = () => dispatch => {
     dispatch(campsitesLoading());
     
     return fetch(baseUrl + 'campsites')
-    .then(response => {
-        if (response.ok) {
-            return response;
+    .then(res => {
+        if (res.ok) {
+            return res;
         } else {
-            const error = new Error(`Error ${response.status}: ${response.statusText}`);
-            error.response = response;
+            const error = new Error(`Error ${res.status}: ${res.statusText}`);
+            error.res = res;
             throw error;
         }
     },
@@ -21,7 +21,7 @@ export const fetchCampsites = () => dispatch => {
         throw errMess;
     }
     )
-    .then(response => response.json())
+    .then(res => res.json())
     .then(campsites => dispatch(addCampsites(campsites)))
     .catch(error => dispatch(campsitesFailed(error.message)));
 };
@@ -42,12 +42,12 @@ export const addCampsites = campsites => ({
 
 export const fetchComments = () => dispatch => {
     return fetch(baseUrl + 'comments')
-    .then(response => {
-        if (response.ok) {
-            return response;
+    .then(res => {
+        if (res.ok) {
+            return res;
         } else {
-            const error = new Error(`Error ${response.status}: ${response.statusText}`);
-            error.response = response;
+            const error = new Error(`Error ${res.status}: ${res.statusText}`);
+            error.res = res;
             throw error;
         }
     },
@@ -56,7 +56,7 @@ export const fetchComments = () => dispatch => {
         throw errMess;
     }
     )
-    .then(response => response.json())
+    .then(res => res.json())
     .then(comments => dispatch(addComments(comments)))
     .catch(error => dispatch(commentsFailed(error.message)));
 };
@@ -92,19 +92,19 @@ export const postComment = (campsiteId, rating, author, text) => dispatch => {
             "Content-Type": "application/json"
         }
     })
-    .then(response => {
-        if (response.ok) {
-                    return response;
+    .then(res => {
+        if (res.ok) {
+                    return res;
                 } else {
-                    const error = new Error(`Error ${response.status}: ${response.statusText}`);
-                    error.response = response;
+                    const error = new Error(`Error ${res.status}: ${res.statusText}`);
+                    error.res = res;
                     throw error;
                 }
             },
             error => { throw error; }
         )
-        .then(response => response.json())
-        .then(response => dispatch(addComment(response)))
+        .then(res => res.json())
+        .then(res => dispatch(addComment(res)))
         .catch(error => {
             console.log('post comment', error.message);
             alert('Your comment could not be posted\nError: ' + error.message);
@@ -116,12 +116,12 @@ export const fetchPromotions = () => dispatch => {
     dispatch(promotionsLoading());
     
     return fetch(baseUrl + 'promotions')
-    .then(response => {
-        if (response.ok) {
-                    return response;
+    .then(res => {
+        if (res.ok) {
+                    return res;
                 } else {
-                    const error = new Error(`Error ${response.status}: ${response.statusText}`);
-                    error.response = response;
+                    const error = new Error(`Error ${res.status}: ${res.statusText}`);
+                    error.res = res;
                     throw error;
                 }
             },
@@ -130,7 +130,7 @@ export const fetchPromotions = () => dispatch => {
                 throw errMess;
             }
         )
-        .then(response => response.json())
+        .then(res => res.json())
         .then(promotions => dispatch(addPromotions(promotions)))
         .catch(error => dispatch(promotionsFailed(error.message)));
 };
@@ -148,3 +148,71 @@ export const addPromotions = promotions => ({
     type: ActionTypes.ADD_PROMOTIONS,
     payload: promotions
 });
+
+export const fetchPartners = () => dispatch => {
+
+    dispatch(partnersLoading());
+
+    return fetch(baseUrl + 'partners')
+    .then(res => {
+        if (res.ok) {
+                    return res;
+                } else {
+                    const error = new Error(`Error ${res.status}: ${res.statusText}`);
+                    error.res = res;
+                    throw error;
+                }
+            },
+            error => {
+                const errMess = new Error(error.message);
+                throw errMess;
+            }
+        )    
+        .then(res => res.json())
+        .then(partners => dispatch(addPartners(partners)))
+        .catch(error => dispatch(partnersFailed(error.message)));
+};
+
+export const partnersLoading = () => ({
+    type: ActionTypes.PARTNERS_LOADING
+});
+
+export const partnersFailed = errMess => ({
+    type: ActionTypes.PARTNERS_FAILED,
+    payload: errMess
+});
+
+export const addPartners = partners => ({
+    type: ActionTypes.ADD_PARTNERS,
+    payload: partners
+});
+
+export const postFeedback = (feedback) => () => {
+
+    return fetch({
+        method: "POST",
+        body: JSON.stringify(feedback),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(res => {
+        if (res.ok) {
+                    return res;
+                } else {
+                    const error = new Error(`Error ${res.status}: ${res.statusText}`);
+                    error.res = res;
+                    throw error;
+                }
+            },
+            error => { throw error; }
+        )
+        .then(res => res.json())
+        .then(res => alert('Thank you for your feedback!' + JSON.stringify(res)))
+        // .then(res => res.text())
+        // .then(text => console.log(text))
+        .catch(error => {
+            console.log('post feedback', error.message);
+            alert('Your feedback could not be posted\nError: ' + error.message);
+        })
+}
